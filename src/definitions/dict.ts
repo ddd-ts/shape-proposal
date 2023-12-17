@@ -5,9 +5,13 @@ import {
 } from "./definition";
 import { Shorthands, ShorthandToLonghand } from "./shorthands";
 
+type OnlyNonUndefined<C extends Record<string, any>> = {
+  [k in keyof C]: undefined extends C[k] ? never : k;
+}[keyof C]
+
 type OnlyRequired<C extends Record<string, any>> = {
-  [k in keyof C]: undefined extends C[k] ? never : C[k];
-};
+  [k in OnlyNonUndefined<C>]: C[k]
+}
 
 type A = {
   a: string;
