@@ -2,6 +2,8 @@ import { Shape } from ".";
 import { Definition } from "./definitions/definition";
 import { Dict } from "./definitions/dict";
 import { Literal } from "./definitions/literal";
+import { Multiple } from "./definitions/multiple";
+import { Optional } from "./definitions/optional";
 
 describe("Shape", () => {
   function check<D extends Definition>(
@@ -30,6 +32,27 @@ describe("Shape", () => {
     class Test extends Shape({
       value: String,
     }) {}
+  });
+
+  it("Shape multiple with keyword notation", () => {
+    class Test extends Shape({
+      value: Multiple(Literal(String)),
+    }) {}
+  });
+
+  it("Shape multiple with keyword-less notation", () => {
+    class Test extends Shape({
+      value: [String],
+    }) {}
+    const a = new Test({ value: ["a", "b"] });
+  });
+
+  it("Shape optional with keyword notation", () => {
+    class Test extends Shape({
+      value: Optional(String),
+    }) {}
+
+    const a = new Test({});
   });
 
   // it("shape of string", () => {
