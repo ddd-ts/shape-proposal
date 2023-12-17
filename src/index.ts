@@ -32,7 +32,7 @@ export const Shape = <D extends DictConfiguration | DictDefinition<any>>(
     }
   }
   return Intermediate as any as (new (
-    data: DefinitionRuntime<ShorthandToLonghand<D>>
+    data: Expand<DefinitionRuntime<ShorthandToLonghand<D>>>
   ) => Intermediate & DefinitionRuntime<ShorthandToLonghand<D>>) & {
     deserialize: (typeof Intermediate)["deserialize"];
     definition: D;

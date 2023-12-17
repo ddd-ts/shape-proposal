@@ -1,32 +1,28 @@
+import { Expand } from "../types";
 import {
   Definition,
   DefinitionRuntime,
   DefinitionSerialized,
 } from "./definition";
+import { OptionalConfiguration } from "./optional";
 import { Shorthands, ShorthandToLonghand } from "./shorthands";
-
-type OnlyNonUndefined<C extends Record<string, any>> = {
-  [k in keyof C]: undefined extends C[k] ? never : k;
-}[keyof C]
-
-type OnlyRequired<C extends Record<string, any>> = {
-  [k in OnlyNonUndefined<C>]: C[k]
-}
-
-type A = {
-  a: string;
-  b: number | undefined;
-};
-type B = OnlyRequired<A>;
 
 export type DictConfiguration = { [key: string]: Shorthands | Definition };
 export type DictShorthand = Record<string, DictConfiguration>;
+
+
+type OnlyOptionalKeys<C extends DictConfiguration> = {
+  [k in keyof C]: C[k] extends OptionalConfiguration ? k : never
+}[keyof C];
+
+type OnlyRequiredKeys<C extends DictConfiguration> = {
+  [k in keyof C]: C[k] extends OptionalConfiguration ? never : k
+}[keyof C];
+
+type DictRuntime<C extends DictConfiguration> = { [k in OnlyRequiredKeys<C>]: DefinitionRuntime<ShorthandToLonghand<C[k]>> } & { [k in OnlyOptionalKeys<C>]?: DefinitionRuntime<ShorthandToLonghand<C[k]>> };
+
 export type DictDefinition<C extends DictConfiguration> = Definition<
-  {
-    [k in keyof C]?: DefinitionRuntime<ShorthandToLonghand<C[k]>> | undefined;
-  } & {
-    [k in keyof OnlyRequired<C>]: DefinitionRuntime<ShorthandToLonghand<C[k]>>;
-  },
+  DictRuntime<C>,
   { [k in keyof C]: DefinitionSerialized<ShorthandToLonghand<C[k]>> }
 >;
 export function Dict<C extends DictConfiguration>(

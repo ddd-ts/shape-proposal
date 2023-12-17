@@ -18,7 +18,7 @@ describe("Shape", () => {
       Dict({
         value: Literal(String),
       })
-    ) {}
+    ) { }
 
     const test = new Test({
       value: "my first shape",
@@ -31,28 +31,29 @@ describe("Shape", () => {
   it("Shape with shorthand notation", () => {
     class Test extends Shape({
       value: String,
-    }) {}
+    }) { }
   });
 
   it("Shape multiple with keyword notation", () => {
     class Test extends Shape({
       value: Multiple(Literal(String)),
-    }) {}
+    }) { }
   });
 
   it("Shape multiple with keyword-less notation", () => {
     class Test extends Shape({
       value: [String],
-    }) {}
+    }) { }
     const a = new Test({ value: ["a", "b"] });
   });
 
   it("Shape optional with keyword notation", () => {
-    class Test extends Shape({
-      value: Optional(String),
-    }) {}
 
-    const a = new Test({});
+    class Other extends Shape({
+      value: Optional(String),
+    }) { }
+
+    const a = new Other({});
   });
 
   // it("shape of string", () => {
