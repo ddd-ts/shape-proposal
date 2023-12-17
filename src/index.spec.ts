@@ -53,7 +53,7 @@ describe("Shape", () => {
       value: Optional(String),
     }) { }
 
-    const a = new Other({});
+    const a = new Other({}).serialize()
   });
 
   // it("shape of string", () => {

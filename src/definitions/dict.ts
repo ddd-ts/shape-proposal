@@ -21,9 +21,11 @@ type OnlyRequiredKeys<C extends DictConfiguration> = {
 
 type DictRuntime<C extends DictConfiguration> = { [k in OnlyRequiredKeys<C>]: DefinitionRuntime<ShorthandToLonghand<C[k]>> } & { [k in OnlyOptionalKeys<C>]?: DefinitionRuntime<ShorthandToLonghand<C[k]>> };
 
+type DictSerialized<C extends DictConfiguration> = { [k in OnlyRequiredKeys<C>]: DefinitionSerialized<ShorthandToLonghand<C[k]>> } & { [k in OnlyOptionalKeys<C>]?: DefinitionSerialized<ShorthandToLonghand<C[k]>> };
+
 export type DictDefinition<C extends DictConfiguration> = Definition<
   DictRuntime<C>,
-  { [k in keyof C]: DefinitionSerialized<ShorthandToLonghand<C[k]>> }
+  DictSerialized<C>
 >;
 export function Dict<C extends DictConfiguration>(
   configuration: C
