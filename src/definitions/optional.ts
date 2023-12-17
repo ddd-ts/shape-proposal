@@ -5,13 +5,14 @@ import {
 } from "./definition";
 import { Shorthands, ShorthandToLonghand } from "./shorthands";
 
-export type OptionalConfiguration = Shorthands | Definition;
+export type OptionalConfiguration = Shorthands | Definition
 export type OptionalDefinition<C extends OptionalConfiguration> = Definition<
   DefinitionRuntime<ShorthandToLonghand<C>> | undefined,
   DefinitionSerialized<ShorthandToLonghand<C>> | undefined
->;
+> & { optional: true };
+
 export function Optional<C extends OptionalConfiguration>(
-  configuration: C
+  configuration: Exclude<C, { optional: true }>
 ): OptionalDefinition<C> {
   return {
     serialize: (runtime) => {

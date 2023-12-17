@@ -4,35 +4,36 @@ import {
 } from "./definitions/definition";
 import { DictConfiguration, DictDefinition } from "./definitions/dict";
 import { ShorthandToLonghand } from "./definitions/shorthands";
-import { Expand } from "./types";
 
-export class IsShape {
-  constructor(data: any) {
+export abstract class IsShape<D extends DictConfiguration | DictDefinition<any>> {
+  constructor(data: DefinitionRuntime<ShorthandToLonghand<D>>) {
     Object.assign(this, data);
   }
+
+  serialize(): DefinitionSerialized<ShorthandToLonghand<D>> {
+    throw new Error("Not implemented");
+  }
+
 }
 
 export const Shape = <D extends DictConfiguration | DictDefinition<any>>(
   definition: D
 ) => {
-  class Intermediate extends IsShape {
-    constructor(data: DefinitionRuntime<ShorthandToLonghand<D>>) {
-      super(data);
-    }
+  class Intermediate extends IsShape<D> {
 
     static deserialize<T extends typeof IsShape>(
       this: T,
-      serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>
+      serialized: DefinitionSerialized<ShorthandToLonghand<D>>
     ) {
       return new this(definition.deserialize(serialized));
     }
 
-    serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>> {
+    serialize(): DefinitionSerialized<ShorthandToLonghand<D>> {
       return definition.serialize(this);
     }
   }
   return Intermediate as any as (new (
-    data: Expand<DefinitionRuntime<ShorthandToLonghand<D>>>
+    data: DefinitionRuntime<ShorthandToLonghand<D>>
   ) => Intermediate & DefinitionRuntime<ShorthandToLonghand<D>>) & {
     deserialize: (typeof Intermediate)["deserialize"];
     definition: D;

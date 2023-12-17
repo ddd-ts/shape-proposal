@@ -1,3 +1,6 @@
+import { IsShape } from "..";
+import { Constructor } from "../types";
+import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
 import { DictShorthand, DictDefinition, DictConfiguration } from "./dict";
 import {
@@ -11,17 +14,11 @@ import {
   MultipleShorthand,
 } from "./multiple";
 
-export type Shorthands = LiteralShorthand | DictShorthand | MultipleShorthand;
+export type Shorthands = LiteralShorthand | DictShorthand | MultipleShorthand | ChildShorthand;
 
-export type LonghandToShorthand =
-  | LiteralDefinition<LiteralConfiguration>
-  | LiteralConfiguration
-  | DictDefinition<DictConfiguration>
-  | DictConfiguration
-  | MultipleDefinition<MultipleConfiguration>
-  | MultipleConfiguration;
-
-export type ShorthandToLonghand<T> = T extends Definition
+export type ShorthandToLonghand<T> = T extends Constructor<IsShape<any>>
+  ? ChildDefinition<T>
+  : T extends Definition
   ? T
   : T extends typeof String
   ? LiteralDefinition<T>

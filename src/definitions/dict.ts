@@ -1,10 +1,8 @@
-import { Expand } from "../types";
 import {
   Definition,
   DefinitionRuntime,
   DefinitionSerialized,
 } from "./definition";
-import { OptionalConfiguration } from "./optional";
 import { Shorthands, ShorthandToLonghand } from "./shorthands";
 
 export type DictConfiguration = { [key: string]: Shorthands | Definition };
@@ -12,11 +10,11 @@ export type DictShorthand = Record<string, DictConfiguration>;
 
 
 type OnlyOptionalKeys<C extends DictConfiguration> = {
-  [k in keyof C]: C[k] extends OptionalConfiguration ? k : never
+  [k in keyof C]: C[k] extends { optional: true } ? k : never
 }[keyof C];
 
 type OnlyRequiredKeys<C extends DictConfiguration> = {
-  [k in keyof C]: C[k] extends OptionalConfiguration ? never : k
+  [k in keyof C]: C[k] extends { optional: true } ? never : k
 }[keyof C];
 
 type DictRuntime<C extends DictConfiguration> = { [k in OnlyRequiredKeys<C>]: DefinitionRuntime<ShorthandToLonghand<C[k]>> } & { [k in OnlyOptionalKeys<C>]?: DefinitionRuntime<ShorthandToLonghand<C[k]>> };

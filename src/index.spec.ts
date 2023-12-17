@@ -1,4 +1,5 @@
 import { Shape } from ".";
+import { Child } from "./definitions/child";
 import { Definition } from "./definitions/definition";
 import { Dict } from "./definitions/dict";
 import { Literal } from "./definitions/literal";
@@ -32,6 +33,8 @@ describe("Shape", () => {
     class Test extends Shape({
       value: String,
     }) { }
+
+    new Test({})
   });
 
   it("Shape multiple with keyword notation", () => {
@@ -53,8 +56,32 @@ describe("Shape", () => {
       value: Optional(String),
     }) { }
 
-    const a = new Other({}).serialize()
+    const a = new Other({})
   });
+
+  it('Shape child with keyword notation', () => {
+    class Other extends Shape({
+      yo: String,
+    }) { }
+
+    class Test extends Shape({
+      value: Child(Other)
+    }) { }
+
+    new Test({ value: new Other({ yo: ',' }) }).value
+  })
+
+  it('Shape child with keyword-less notation', () => {
+    class Other extends Shape({
+      value: String,
+    }) { }
+
+    class Test extends Shape({
+      value: Other
+    }) { }
+
+    new Test().value
+  })
 
   // it("shape of string", () => {
   //   class Test extends Shape({
