@@ -15,6 +15,7 @@ export function Optional<C extends OptionalConfiguration>(
   configuration: Exclude<C, { optional: true }>
 ): OptionalDefinition<C> {
   return {
+    optional: true,
     serialize: (runtime) => {
       return {} as any;
     },

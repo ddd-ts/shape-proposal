@@ -4,8 +4,11 @@ import {
 } from "./definitions/definition";
 import { DictConfiguration, DictDefinition } from "./definitions/dict";
 import { ShorthandToLonghand } from "./definitions/shorthands";
+import { Constructor } from "./types";
 
 export abstract class IsShape<D extends DictConfiguration | DictDefinition<any>> {
+
+  __isShape = true;
   constructor(data: DefinitionRuntime<ShorthandToLonghand<D>>) {
     Object.assign(this, data);
   }
@@ -21,7 +24,7 @@ export const Shape = <D extends DictConfiguration | DictDefinition<any>>(
 ) => {
   class Intermediate extends IsShape<D> {
 
-    static deserialize<T extends typeof IsShape>(
+    static deserialize<T extends Constructor<IsShape<any>>>(
       this: T,
       serialized: DefinitionSerialized<ShorthandToLonghand<D>>
     ) {

@@ -2,22 +2,23 @@ import { IsShape } from "..";
 import { Constructor } from "../types";
 import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
-import { DictShorthand, DictDefinition, DictConfiguration } from "./dict";
+import { DictShorthand, DictDefinition } from "./dict";
+import { SerializableClassConfiguration, SerializableClassDefinition, SerializableClassShorthand } from "./serializableClass";
 import {
   LiteralShorthand,
   LiteralDefinition,
-  LiteralConfiguration,
 } from "./literal";
 import {
-  MultipleConfiguration,
   MultipleDefinition,
   MultipleShorthand,
 } from "./multiple";
 
-export type Shorthands = LiteralShorthand | DictShorthand | MultipleShorthand | ChildShorthand;
+export type Shorthands = LiteralShorthand | DictShorthand | MultipleShorthand | ChildShorthand | SerializableClassShorthand
 
 export type ShorthandToLonghand<T> = T extends Constructor<IsShape<any>>
   ? ChildDefinition<T>
+  : T extends SerializableClassConfiguration
+  ? SerializableClassDefinition<T>
   : T extends Definition
   ? T
   : T extends typeof String

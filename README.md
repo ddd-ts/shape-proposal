@@ -12,3 +12,4 @@
 == for later
 
 - [ ] Enum { match } like either ?
+- [ ] SerializableClass ensure serialized type output

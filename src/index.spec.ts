@@ -1,31 +1,68 @@
-import { Shape } from ".";
+import { IsShape, Shape } from ".";
 import { Child } from "./definitions/child";
 import { Definition } from "./definitions/definition";
 import { Dict } from "./definitions/dict";
+import { SerializableClass } from "./definitions/serializableClass";
 import { Literal } from "./definitions/literal";
 import { Multiple } from "./definitions/multiple";
 import { Optional } from "./definitions/optional";
 
 describe("Shape", () => {
   function check<D extends Definition>(
-    constructor: ReturnType<typeof Shape<D>>,
+    constructor: typeof IsShape<D>,
     instance: InstanceType<ReturnType<typeof Shape<D>>>
   ) {
     expect(instance).toEqual(constructor.deserialize(instance.serialize()));
   }
 
-  it("Shape with String value", () => {
+  it('Shape with explicit Dict', () => {
+    class Test extends Shape(
+      Dict({})
+    ) { }
+
+    // @ts-expect-error - missing value
+    new Test()
+
+    new Test({});
+    check(Test, new Test({}));
+  })
+
+  it('Shape with implicit Dict', () => {
+    class Test extends Shape({}) { }
+
+    // @ts-expect-error - missing value
+    new Test()
+
+    new Test({});
+    check(Test, new Test({}));
+  })
+
+
+  it("Shape with Literal value", () => {
     class Test extends Shape(
       Dict({
-        value: Literal(String),
+        string: Literal(String),
+        number: Literal(Number),
+        date: Literal(Date),
       })
     ) { }
 
-    const test = new Test({
-      value: "my first shape",
-    });
+    // @ts-expect-error - missing value
+    new Test({ string: "1", number: 1 });
+    new Test({
+      // @ts-expect-error - wrong type
+      string: 1,
+      // @ts-expect-error - wrong type
+      number: "1",
+      // @ts-expect-error - wrong type
+      date: "1",
+    })
 
-    expect(test.value).toBe("my first shape");
+    const test = new Test({ string: "a", number: 1, date: new Date() });
+
+    expect(test.string).toBe("a");
+    expect(test.number).toBe(1);
+    expect(test.date).toBeInstanceOf(Date);
     check(Test, test);
   });
 
@@ -34,7 +71,12 @@ describe("Shape", () => {
       value: String,
     }) { }
 
+    // @ts-expect-error - missing value
     new Test({})
+    // @ts-expect-error - wrong type
+    new Test({ value: 1 })
+
+    new Test({ value: "a" });
   });
 
   it("Shape multiple with keyword notation", () => {
@@ -80,46 +122,44 @@ describe("Shape", () => {
       value: Other
     }) { }
 
-    new Test().value
   })
 
-  // it("shape of string", () => {
-  //   class Test extends Shape({
-  //     value: Literal(String),
-  //   }) {}
+  it('Shape serializableClass with keyword notation', () => {
+    class Id {
+      constructor(public value: string) { }
+      serialize() {
+        return this.value
+      }
+      static deserialize(value: string) {
+        return new Id(value)
+      }
+    }
 
-  //   const a = new Test("a");
-  //   check(a);
-  // });
+    class Test extends Shape({
+      value: SerializableClass(Id)
+    }) { }
 
-  // it("Primitive", () => {
-  //   class Id extends Primitive(String) {}
-  // });
+    const a: string = new Test({ value: new Id('a') }).serialize().value
+  })
 
-  // it("allows keyword-less notation", () => {
-  //   class Test extends Shape(
-  //     Dict({
-  //       value: Literal(String),
-  //     })
-  //   ) {}
+  it('Shape serializableClass with keywordless notation', () => {
+    class Id {
+      constructor(public value: string) { }
+      serialize() {
+        return this.value
+      }
+      static deserialize(value: string) {
+        return new Id(value)
+      }
+    }
 
-  //   class TestKeywordLess extends Shape({
-  //     value: String,
-  //   }) {}
+    class Test extends Shape({
+      value: Id
+    }) { }
 
-  //   const a = new Test("a");
-  //   const b = new TestKeywordLess({ value: "b" });
+    new Test({ value: new Id('a') }).serialize()
+    Test.deserialize({ value: 'a' })
 
-  //   expect(a.serialize()).toEqual(b.serialize());
-  //   check(a);
-  //   check(b);
-  // });
-
-  // it("shape is recognizable", () => {
-  //   class Test extends Shape({}) {}
-
-  //   const a = new Test({});
-  //   expect(a instanceof Shape).toBe(true);
-  //   check(a);
-  // });
+    const a: string = new Test({ value: new Id('a') }).serialize().value
+  })
 });

@@ -9,6 +9,3 @@ export type DefinitionRuntime<D extends Definition> = Parameters<
 export type DefinitionSerialized<D extends Definition> = ReturnType<
   D["serialize"]
 >;
-
-// optional
-// either

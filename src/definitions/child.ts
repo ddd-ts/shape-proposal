@@ -1,20 +1,15 @@
 import { IsShape } from "..";
 import { Constructor } from "../types";
-import {
-    Definition,
-    DefinitionRuntime,
-    DefinitionSerialized,
-} from "./definition";
-import { Shorthands, ShorthandToLonghand } from "./shorthands";
+import { Definition } from "./definition";
 
 export type ChildConfiguration = Constructor<IsShape<any>>;
-export type ChildShorthand = ChildConfiguration
+export type ChildShorthand = ChildConfiguration;
 export type ChildDefinition<C extends ChildConfiguration> = Definition<
     InstanceType<C>,
-    InstanceType<C>
+    C extends { serialize(): infer D } ? D : never
 >;
 export function Child<C extends ChildConfiguration>(
-    configuration: C
+    configuration: C,
 ): ChildDefinition<C> {
     return {
         serialize: (runtime) => {
