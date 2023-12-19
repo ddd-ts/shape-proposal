@@ -1,4 +1,4 @@
-import { IsShape } from "..";
+import { IsShape, IsShapeConstructor } from "..";
 import { Constructor } from "../types";
 import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
@@ -20,7 +20,7 @@ export type Shorthands =
   | SerializableClassShorthand
   | StringEnumShorthand;
 
-export type ShorthandToLonghand<T> = T extends Constructor<IsShape<any>>
+export type ShorthandToLonghand<T> = T extends IsShapeConstructor<Definition>
   ? ChildDefinition<T>
   : T extends SerializableClassConfiguration
   ? SerializableClassDefinition<T>
@@ -29,6 +29,8 @@ export type ShorthandToLonghand<T> = T extends Constructor<IsShape<any>>
   : T extends typeof String
   ? LiteralDefinition<T>
   : T extends typeof Number
+  ? LiteralDefinition<T>
+  : T extends typeof Boolean
   ? LiteralDefinition<T>
   : T extends typeof Date
   ? LiteralDefinition<T>

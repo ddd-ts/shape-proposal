@@ -3,6 +3,7 @@ import { Definition } from "./definition";
 export type Literals = [
   [typeof String, string],
   [typeof Number, number],
+  [typeof Boolean, boolean],
   [typeof Date, Date]
 ];
 export type LiteralInput = Literals[number][0];

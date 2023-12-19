@@ -1,3 +1,4 @@
+import { shorthandToLonghand } from "../shorthandToLonghand";
 import {
   Definition,
   DefinitionParameter,
@@ -43,18 +44,27 @@ export type DictDefinition<C extends DictConfiguration> = Definition<
 export function Dict<C extends DictConfiguration>(
   configuration: C
 ): DictDefinition<C> {
+  const longhand = Object.entries(configuration).reduce<{
+    [key: string]: Definition;
+  }>((acc, [key, value]) => {
+    acc[key] = shorthandToLonghand(value);
+    return acc;
+  }, {});
+
   return {
     serialize: (runtime) => {
       const serialized = {} as any;
-      for (const key in configuration) {
-        serialized[key] = configuration[key]!.serialize(runtime[key]);
+      for (const key in longhand) {
+        const typedKey = key as keyof DictRuntime<C>;
+        serialized[key] = longhand[key]!.serialize(runtime[typedKey]);
       }
       return serialized;
     },
     deserialize: (serialized) => {
       const runtime = {} as any;
-      for (const key in configuration) {
-        runtime[key] = configuration[key]!.deserialize(serialized[key]);
+      for (const key in longhand) {
+        const typedKey = key as keyof DictRuntime<C>;
+        runtime[key] = longhand[key]!.deserialize(serialized[typedKey]);
       }
       return runtime;
     },
