@@ -6,8 +6,6 @@
   - [ ] runtime expand ( constructor param )
   - [ ] serialize expand ( serialize(): THIS )
   - [ ] deserialize expand ( deserialize(THIS): )
-- [ ] Split tests into definition tests
-
 - [ ] tuples
 
 == for later
