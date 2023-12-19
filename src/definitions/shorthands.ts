@@ -3,17 +3,22 @@ import { Constructor } from "../types";
 import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
 import { DictShorthand, DictDefinition } from "./dict";
-import { SerializableClassConfiguration, SerializableClassDefinition, SerializableClassShorthand } from "./serializableClass";
 import {
-  LiteralShorthand,
-  LiteralDefinition,
-} from "./literal";
-import {
-  MultipleDefinition,
-  MultipleShorthand,
-} from "./multiple";
+  SerializableClassConfiguration,
+  SerializableClassDefinition,
+  SerializableClassShorthand,
+} from "./serializableClass";
+import { LiteralShorthand, LiteralDefinition } from "./literal";
+import { MultipleDefinition, MultipleShorthand } from "./multiple";
+import { StringEnumDefinition, StringEnumShorthand } from "./stringEnum";
 
-export type Shorthands = LiteralShorthand | DictShorthand | MultipleShorthand | ChildShorthand | SerializableClassShorthand
+export type Shorthands =
+  | LiteralShorthand
+  | DictShorthand
+  | MultipleShorthand
+  | ChildShorthand
+  | SerializableClassShorthand
+  | StringEnumShorthand;
 
 export type ShorthandToLonghand<T> = T extends Constructor<IsShape<any>>
   ? ChildDefinition<T>
@@ -27,6 +32,8 @@ export type ShorthandToLonghand<T> = T extends Constructor<IsShape<any>>
   ? LiteralDefinition<T>
   : T extends typeof Date
   ? LiteralDefinition<T>
+  : T extends [...infer C extends string[]]
+  ? StringEnumDefinition<C>
   : T extends [infer C]
   ? MultipleDefinition<ShorthandToLonghand<C>>
   : T extends Record<string, any>
