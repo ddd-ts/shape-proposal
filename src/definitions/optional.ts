@@ -1,3 +1,4 @@
+import { shorthandToLonghand } from "../shorthandToLonghand";
 import {
   Definition,
   DefinitionRuntime,
@@ -5,7 +6,7 @@ import {
 } from "./definition";
 import { Shorthands, ShorthandToLonghand } from "./shorthands";
 
-export type OptionalConfiguration = Shorthands | Definition
+export type OptionalConfiguration = Shorthands | Definition;
 export type OptionalDefinition<C extends OptionalConfiguration> = Definition<
   DefinitionRuntime<ShorthandToLonghand<C>> | undefined,
   DefinitionSerialized<ShorthandToLonghand<C>> | undefined
@@ -14,13 +15,15 @@ export type OptionalDefinition<C extends OptionalConfiguration> = Definition<
 export function Optional<C extends OptionalConfiguration>(
   configuration: Exclude<C, { optional: true }>
 ): OptionalDefinition<C> {
+  const longhand = shorthandToLonghand(configuration);
+
   return {
     optional: true,
     serialize: (runtime) => {
-      return {} as any;
+      return runtime ? longhand.serialize(runtime) : undefined;
     },
     deserialize: (serialized) => {
-      return {} as any;
+      return serialized ? longhand.deserialize(serialized) : undefined;
     },
   };
 }

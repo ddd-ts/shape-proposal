@@ -28,19 +28,7 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
     typeof definition.serialize === "function" &&
     typeof definition.deserialize === "function"
   ) {
-    // TODO FIX
-    // Dict({
-    //   a: Number
-    // })
     return definition as Definition;
-  }
-  if ("prototype" in definition) {
-    if ((definition as any as typeof IsShape).__isShape) {
-      return Child(definition as ChildConfiguration);
-    }
-    return SerializableClass(
-      definition as SerializableClassConfiguration
-    ) as any;
   }
   if (definition === String) {
     return Literal(String) as any;
@@ -53,6 +41,14 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
   }
   if (definition === Date) {
     return Literal(Date) as any;
+  }
+  if ("prototype" in definition) {
+    if ((definition as any as typeof IsShape).__isShape) {
+      return Child(definition as ChildConfiguration);
+    }
+    return SerializableClass(
+      definition as SerializableClassConfiguration
+    ) as any;
   }
   if (Array.isArray(definition)) {
     const [arrayType] = definition;
@@ -68,7 +64,7 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
     if (definition.length !== 1) {
       throw new Error("wrong multiple");
     }
-    return Multiple(shorthandToLonghand(arrayType)) as any;
+    return Multiple(arrayType) as any;
   }
   if (typeof definition === "object") {
     return Dict(definition as DictConfiguration) as any;

@@ -1,7 +1,8 @@
 import { Shape } from "..";
+import { check } from "../testUtils";
 import { SerializableClass } from "./serializableClass";
 
-describe("Definition: Child", () => {
+describe("Definition: SerializableClass", () => {
   it("uses keyword notation", () => {
     class Id {
       constructor(public value: string) {}
@@ -17,10 +18,13 @@ describe("Definition: Child", () => {
       value: SerializableClass(Id),
     }) {}
 
-    expect(new Test({ value: new Id("a") }).serialize().value).toBeInstanceOf(
-      String
-    );
-    expect(new Test({ value: new Id("a") }).serialize().value).toEqual("a");
+    const a = new Test({
+      value: new Id("abc"),
+    });
+
+    expect(a.value).toBeInstanceOf(Id);
+    expect(a.value.value).toEqual("abc");
+    check(Test, a);
   });
 
   it("uses keyword-less notation", () => {
@@ -38,10 +42,13 @@ describe("Definition: Child", () => {
       value: Id,
     }) {}
 
-    new Test({ value: new Id("a") }).serialize();
-    Test.deserialize({ value: "a" });
+    const a = new Test({
+      value: new Id("abc"),
+    });
 
-    const a: string = new Test({ value: new Id("a") }).serialize().value;
+    expect(a.value).toBeInstanceOf(Id);
+    expect(a.value.value).toEqual("abc");
+    check(Test, a);
   });
 
   it("does not allow SerializableClass with not serializable serialize() return type", () => {
@@ -66,21 +73,26 @@ describe("Definition: Child", () => {
 
   it("Allows recursive serialization with SerializableClass", () => {
     class Tree {
-      public leafName!: string;
-      public child?: Tree;
+      constructor(
+        public readonly name: string,
+        public readonly child: Tree | undefined
+      ) {}
 
       serialize(): {
         name: string;
         child: ReturnType<Tree["serialize"]> | undefined;
       } {
         return {
-          name: this.leafName,
+          name: this.name,
           child: this.child?.serialize(),
         };
       }
 
-      static deserialize() {
-        return new Tree();
+      static deserialize(serialized: ReturnType<Tree["serialize"]>): Tree {
+        return new Tree(
+          serialized.name,
+          serialized.child ? Tree.deserialize(serialized.child) : undefined
+        );
       }
     }
 
@@ -88,13 +100,15 @@ describe("Definition: Child", () => {
       root: Tree,
     }) {}
 
-    type A = ReturnType<Test["serialize"]>["root"]["child"];
-    const test: A = {
-      name: "",
-      child: {
-        child: undefined,
-        name: "hey",
-      },
-    };
+    const a = new Test({
+      root: new Tree("a", new Tree("b", new Tree("c", undefined))),
+    });
+
+    expect(a.root.name).toBe("a");
+    expect(a.root.child?.name).toBe("b");
+    expect(a.root.child?.child?.name).toBe("c");
+    expect(a.root.child?.child?.child).toBe(undefined);
+
+    check(Test, a);
   });
 });

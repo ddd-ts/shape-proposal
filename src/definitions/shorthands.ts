@@ -1,5 +1,4 @@
-import { IsShape, IsShapeConstructor } from "..";
-import { Constructor } from "../types";
+import { IsShapeConstructor } from "..";
 import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
 import { DictShorthand, DictDefinition } from "./dict";

@@ -1,17 +1,20 @@
 import { Shape } from "..";
+import { check } from "../testUtils";
 import { Child } from "./child";
 
 describe("Definition: Child", () => {
   it("uses keyword notation", () => {
     class Other extends Shape({
-      yo: String,
+      value: String,
     }) {}
 
     class Test extends Shape({
       value: Child(Other),
     }) {}
 
-    new Test({ value: new Other({ yo: "," }) }).value;
+    const a = new Test({ value: new Other({ value: "ya" }) });
+    expect(a.value.value).toEqual("ya");
+    check(Test, a);
   });
 
   it("uses keyword-less notation", () => {
@@ -22,5 +25,9 @@ describe("Definition: Child", () => {
     class Test extends Shape({
       value: Other,
     }) {}
+
+    const a = new Test({ value: new Other({ value: "ya" }) });
+    expect(a.value.value).toEqual("ya");
+    check(Test, a);
   });
 });

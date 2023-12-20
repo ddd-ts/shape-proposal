@@ -42,10 +42,10 @@ export function StringEnum<const C extends StringEnumConfiguration>(
 ): StringEnumDefinition<C> {
   return {
     serialize: (runtime) => {
-      return {} as any;
+      return runtime.value;
     },
     deserialize: (serialized) => {
-      return {} as any;
+      return new Matchable(serialized);
     },
-  } as any;
+  };
 }

@@ -1,3 +1,4 @@
+import { shorthandToLonghand } from "../shorthandToLonghand";
 import {
   Definition,
   DefinitionRuntime,
@@ -14,12 +15,14 @@ export type MultipleDefinition<C extends MultipleConfiguration> = Definition<
 export function Multiple<C extends MultipleConfiguration>(
   configuration: C
 ): MultipleDefinition<C> {
+  const longhand = shorthandToLonghand(configuration);
+
   return {
     serialize: (runtime) => {
-      return {} as any;
+      return runtime.map(longhand.serialize);
     },
     deserialize: (serialized) => {
-      return {} as any;
+      return serialized.map(longhand.deserialize);
     },
   };
 }

@@ -1,12 +1,19 @@
 import { Shape } from "..";
+import { check } from "../testUtils";
 import { Optional } from "./optional";
 
-describe("Definition: Child", () => {
+describe("Definition: Optional", () => {
   it("uses keyword notation", () => {
-    class Other extends Shape({
+    class Test extends Shape({
       value: Optional(String),
     }) {}
 
-    const a = new Other({});
+    const a = new Test({});
+    expect(a.value).toEqual(undefined);
+    check(Test, a);
+
+    const b = new Test({ value: "a" });
+    expect(b.value).toEqual("a");
+    check(Test, b);
   });
 });

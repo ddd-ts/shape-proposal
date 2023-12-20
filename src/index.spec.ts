@@ -50,7 +50,7 @@ describe("Shape", () => {
     expect(a.date).toEqual(new Date("1998-10-28T00:00:00.000Z"));
     expect(a.optional).toEqual(undefined);
     expect(a.multiple).toEqual([1, 2, 3, 4, 5]);
-    expect(a.stringEnum).toEqual("b");
+    expect(a.stringEnum.value).toEqual("b");
     expect(a.child).toEqual(new ShapeChild({ value: 4 }));
     expect(a.serializableClass).toEqual(new SerializableChild(5));
 

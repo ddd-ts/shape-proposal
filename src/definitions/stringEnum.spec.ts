@@ -1,4 +1,5 @@
 import { Shape } from "..";
+import { check } from "../testUtils";
 import { StringEnum } from "./stringEnum";
 
 describe("Definition: Child", () => {
@@ -25,6 +26,13 @@ describe("Definition: Child", () => {
       // @ts-expect-error - wrong type
       enum: "C",
     });
+
+    const a = new Test({
+      enum: "A",
+    });
+
+    expect(a.enum.value).toBe("A");
+    check(Test, a);
   });
 
   it("uses keyword-less notation", () => {
@@ -50,5 +58,12 @@ describe("Definition: Child", () => {
       // @ts-expect-error - wrong type
       enum: "C",
     });
+
+    const a = new Test({
+      enum: "A",
+    });
+
+    expect(a.enum.value).toBe("A");
+    check(Test, a);
   });
 });

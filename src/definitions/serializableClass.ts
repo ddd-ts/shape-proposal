@@ -1,3 +1,4 @@
+import { shorthandToLonghand } from "../shorthandToLonghand";
 import { Constructor } from "../types";
 import { Definition } from "./definition";
 
@@ -23,10 +24,10 @@ export function SerializableClass<C extends SerializableClassConfiguration>(
 ): SerializableClassDefinition<C> {
   return {
     serialize: (runtime) => {
-      return {} as any;
+      return runtime.serialize() as any;
     },
     deserialize: (serialized) => {
-      return {} as any;
+      return configuration.deserialize(serialized) as any;
     },
   };
 }
