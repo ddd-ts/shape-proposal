@@ -19,6 +19,8 @@ export function Optional<C extends OptionalConfiguration>(
 
   return {
     optional: true,
+    paramToRuntime: (param) =>
+      param ? longhand.paramToRuntime(param) : undefined,
     serialize: (runtime) => {
       return runtime ? longhand.serialize(runtime) : undefined;
     },

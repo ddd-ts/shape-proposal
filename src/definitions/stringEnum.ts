@@ -41,11 +41,12 @@ export function StringEnum<const C extends StringEnumConfiguration>(
   ...configuration: C
 ): StringEnumDefinition<C> {
   return {
+    paramToRuntime: (param) => new Matchable(param),
     serialize: (runtime) => {
       return runtime.value;
     },
     deserialize: (serialized) => {
-      return new Matchable(serialized);
+      return serialized;
     },
   };
 }

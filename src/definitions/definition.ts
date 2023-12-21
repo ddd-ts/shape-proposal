@@ -1,6 +1,7 @@
 export type Definition<R = any, S = any, P = R> = {
+  paramToRuntime: (param: P) => R;
   serialize(runtime: R): S;
-  deserialize(serialized: S): R;
+  deserialize(serialized: S): P;
 
   __used?: P;
 };

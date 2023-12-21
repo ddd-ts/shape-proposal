@@ -1,4 +1,5 @@
 import {
+  Definition,
   DefinitionParameter,
   DefinitionRuntime,
   DefinitionSerialized,
@@ -15,12 +16,7 @@ export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
     ) => DefinitionRuntime<ShorthandToLonghand<D>>;
   };
 export abstract class IsShape<D extends DictShorthand | DictDefinition<any>> {
-  static __isShape = true;
   __isShape = true;
-
-  constructor(data: DefinitionParameter<ShorthandToLonghand<D>>) {
-    Object.assign(this, data);
-  }
 
   serialize(): DefinitionSerialized<ShorthandToLonghand<D>> {
     throw new Error("Not implemented");
@@ -33,6 +29,12 @@ export const Shape = <const D extends DictShorthand | DictDefinition<any>>(
   const longhand = shorthandToLonghand(definition);
 
   class Intermediate extends IsShape<D> {
+    constructor(data: DefinitionParameter<ShorthandToLonghand<D>>) {
+      super();
+      const converted = longhand.paramToRuntime(data);
+      Object.assign(this, converted);
+    }
+
     static deserialize<T extends Constructor<IsShape<any>>>(
       this: T,
       serialized: DefinitionSerialized<ShorthandToLonghand<D>>

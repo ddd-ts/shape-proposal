@@ -11,7 +11,7 @@ describe("Definition: Dict", () => {
     ) {}
 
     // @ts-expect-error - missing value
-    new Test();
+    expect(() => new Test()).toThrow();
 
     const a = new Test({ value: 1 });
     expect(a.value).toEqual(1);
@@ -24,7 +24,7 @@ describe("Definition: Dict", () => {
     }) {}
 
     // @ts-expect-error - missing value
-    new Test();
+    expect(() => new Test()).toThrow();
 
     const a = new Test({ value: 1 });
     expect(a.value).toEqual(1);

@@ -43,7 +43,7 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
     return Literal(Date) as any;
   }
   if ("prototype" in definition) {
-    if ((definition as any as typeof IsShape).__isShape) {
+    if (definition.prototype instanceof IsShape) {
       return Child(definition as ChildConfiguration);
     }
     return SerializableClass(

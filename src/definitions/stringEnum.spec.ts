@@ -2,7 +2,7 @@ import { Shape } from "..";
 import { check } from "../testUtils";
 import { StringEnum } from "./stringEnum";
 
-describe("Definition: Child", () => {
+describe("Definition: StringEnum", () => {
   it("uses keyword notation", () => {
     class Test extends Shape({
       enum: StringEnum("A", "B"),

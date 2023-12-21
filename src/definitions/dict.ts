@@ -52,6 +52,17 @@ export function Dict<C extends DictConfiguration>(
   }, {});
 
   return {
+    paramToRuntime: (param) => {
+      return Object.entries(longhand).reduce<Record<string, any>>(
+        (acc, [key, value]) => {
+          const typedKey = key as keyof DictParameter<C>;
+          const paramAtKey = param[typedKey];
+          acc[key] = value.paramToRuntime(paramAtKey);
+          return acc;
+        },
+        {}
+      ) as DictRuntime<C>;
+    },
     serialize: (runtime) => {
       const serialized = {} as any;
       for (const key in longhand) {
