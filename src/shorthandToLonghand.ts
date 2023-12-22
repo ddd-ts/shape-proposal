@@ -14,6 +14,7 @@ import {
 } from "./definitions/serializableClass";
 import { Shorthands, ShorthandToLonghand } from "./definitions/shorthands";
 import { StringEnum } from "./definitions/stringEnum";
+import { Tuple } from "./definitions/tuple";
 
 export function shorthandToLonghand<D extends Definition | Shorthands>(
   definition: D
@@ -62,7 +63,7 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
       return StringEnum(...definition);
     }
     if (definition.length !== 1) {
-      throw new Error("wrong multiple");
+      return Tuple(...definition) as any;
     }
     return Multiple(arrayType) as any;
   }

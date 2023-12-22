@@ -5,7 +5,7 @@ export type ChildConfiguration = IsShapeConstructor<Definition>;
 export type ChildShorthand = ChildConfiguration;
 export type ChildDefinition<C extends ChildConfiguration> = Definition<
   InstanceType<C>,
-  C extends { serialize(): infer D } ? D : never
+  InstanceType<C> extends { serialize(): infer D } ? D : never
 >;
 export function Child<C extends ChildConfiguration>(
   configuration: C
