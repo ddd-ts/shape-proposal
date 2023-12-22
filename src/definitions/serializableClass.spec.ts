@@ -1,11 +1,11 @@
-import { Shape } from "..";
+import { Shape } from "../shape";
 import { check } from "../testUtils";
 import { SerializableClass } from "./serializableClass";
 
 describe("Definition: SerializableClass", () => {
   it("uses keyword notation", () => {
     class Id {
-      constructor(public value: string) {}
+      constructor(public value: string) { }
       serialize() {
         return this.value;
       }
@@ -16,7 +16,7 @@ describe("Definition: SerializableClass", () => {
 
     class Test extends Shape({
       value: SerializableClass(Id),
-    }) {}
+    }) { }
 
     const a = new Test({
       value: new Id("abc"),
@@ -29,7 +29,7 @@ describe("Definition: SerializableClass", () => {
 
   it("uses keyword-less notation", () => {
     class Id {
-      constructor(public value: string) {}
+      constructor(public value: string) { }
       serialize() {
         return this.value;
       }
@@ -40,7 +40,7 @@ describe("Definition: SerializableClass", () => {
 
     class Test extends Shape({
       value: Id,
-    }) {}
+    }) { }
 
     const a = new Test({
       value: new Id("abc"),
@@ -56,7 +56,7 @@ describe("Definition: SerializableClass", () => {
       serialize() {
         return {
           ok: 1,
-          ko: () => {},
+          ko: () => { },
         };
       }
       static deserialize(arg: any) {
@@ -68,7 +68,7 @@ describe("Definition: SerializableClass", () => {
     class TestShape extends Shape({
       // @ts-expect-error - class is not serializable
       ko: Test,
-    }) {}
+    }) { }
   });
 
   it("Allows recursive serialization with SerializableClass", () => {
@@ -76,7 +76,7 @@ describe("Definition: SerializableClass", () => {
       constructor(
         public readonly name: string,
         public readonly child: Tree | undefined
-      ) {}
+      ) { }
 
       serialize(): {
         name: string;
@@ -98,7 +98,7 @@ describe("Definition: SerializableClass", () => {
 
     class Test extends Shape({
       root: Tree,
-    }) {}
+    }) { }
 
     const a = new Test({
       root: new Tree("a", new Tree("b", new Tree("c", undefined))),

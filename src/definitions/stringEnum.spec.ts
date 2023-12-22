@@ -1,4 +1,4 @@
-import { Shape } from "..";
+import { Shape } from "../shape";
 import { check } from "../testUtils";
 import { StringEnum } from "./stringEnum";
 
@@ -6,7 +6,7 @@ describe("Definition: StringEnum", () => {
   it("uses keyword notation", () => {
     class Test extends Shape({
       enum: StringEnum("A", "B"),
-    }) {}
+    }) { }
 
     const valid = new Test({
       enum: "A",
@@ -38,7 +38,7 @@ describe("Definition: StringEnum", () => {
   it("uses keyword-less notation", () => {
     class Test extends Shape({
       enum: ["A", "B"],
-    }) {}
+    }) { }
 
     const valid = new Test({
       enum: "A",

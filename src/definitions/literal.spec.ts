@@ -1,4 +1,4 @@
-import { Shape } from "..";
+import { Shape } from "../shape";
 import { check } from "../testUtils";
 import { Dict } from "./dict";
 import { Literal } from "./literal";
@@ -11,7 +11,7 @@ describe("Definition: Literal", () => {
         number: Literal(Number),
         date: Literal(Date),
       })
-    ) {}
+    ) { }
 
     // @ts-expect-error - missing value
     new Test({ string: "1", number: 1 });
@@ -38,7 +38,7 @@ describe("Definition: Literal", () => {
       string: String,
       number: Number,
       date: Date,
-    }) {}
+    }) { }
 
     // @ts-expect-error - missing value
     new Test({});

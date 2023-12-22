@@ -1,4 +1,4 @@
-import { IsShapeConstructor } from "..";
+import { IsShapeConstructor } from "../shape";
 import { Definition } from "./definition";
 
 export type ChildConfiguration = IsShapeConstructor<Definition>;

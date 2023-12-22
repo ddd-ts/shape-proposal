@@ -1,4 +1,4 @@
-import { Shape } from "..";
+import { Shape } from "../shape";
 import { check } from "../testUtils";
 import { Dict } from "./dict";
 
@@ -8,7 +8,7 @@ describe("Definition: Dict", () => {
       Dict({
         value: Number,
       })
-    ) {}
+    ) { }
 
     // @ts-expect-error - missing value
     expect(() => new Test()).toThrow();
@@ -21,7 +21,7 @@ describe("Definition: Dict", () => {
   it("uses keyword-less notation", () => {
     class Test extends Shape({
       value: Number,
-    }) {}
+    }) { }
 
     // @ts-expect-error - missing value
     expect(() => new Test()).toThrow();

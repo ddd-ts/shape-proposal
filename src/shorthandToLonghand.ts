@@ -1,4 +1,3 @@
-import { IsShape } from ".";
 import { Child, ChildConfiguration } from "./definitions/child";
 import {
   Definition,
@@ -44,7 +43,7 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
     return Literal(Date) as any;
   }
   if ("prototype" in definition) {
-    if (definition.prototype instanceof IsShape) {
+    if ('isShape' in definition.prototype) {
       return Child(definition as ChildConfiguration);
     }
     return SerializableClass(
@@ -70,5 +69,5 @@ export function shorthandToLonghand<D extends Definition | Shorthands>(
   if (typeof definition === "object") {
     return Dict(definition as DictConfiguration) as any;
   }
-  throw new Error("cannot identify shorthand" + JSON.stringify(definition));
+  throw new Error(`cannot identify shorthand ${JSON.stringify(definition)}`);
 }
