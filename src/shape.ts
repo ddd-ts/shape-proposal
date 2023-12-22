@@ -6,24 +6,29 @@ import {
 import { DictDefinition, DictShorthand } from "./definitions/dict";
 import { ShorthandToLonghand } from "./definitions/shorthands";
 import { shorthandToLonghand } from "./shorthandToLonghand";
-import { AbstractConstructor } from "./trait";
-import { Constructor, Expand } from "./types";
+import { AbstractConstructor, Constructor, Expand } from "./types";
 
 export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
   Constructor<{
     serialize: () => Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;
   }> & {
-    deserialize: ShorthandToLonghand<D>['deserialize'];
+    deserialize: ShorthandToLonghand<D>["deserialize"];
     isShape: true;
   };
 
-
-type NonConstructorKeys<T> = ({ [P in keyof T]: T[P] extends new () => any ? never : P })[keyof T];
+type NonConstructorKeys<T> = {
+  [P in keyof T]: T[P] extends new () => any ? never : P;
+}[keyof T];
 type NonConstructor<T> = Pick<T, NonConstructorKeys<T>>;
 
-export const Shape = <const D extends DictShorthand | DictDefinition<any>, B extends Constructor<{}> | AbstractConstructor<{}>>(
+class DefaultShapeBaseClass {}
+
+export const Shape = <
+  const D extends DictShorthand | DictDefinition<any>,
+  B extends Constructor<{}> | AbstractConstructor<{}>
+>(
   definition: D,
-  base: B = class { } as B
+  base: B = DefaultShapeBaseClass as B
 ) => {
   const longhand = shorthandToLonghand(definition);
 
@@ -33,7 +38,7 @@ export const Shape = <const D extends DictShorthand | DictDefinition<any>, B ext
 
     constructor(...args: any[]) {
       const converted = longhand.paramToRuntime(args[0]);
-      super()
+      super();
       Object.assign(this, converted);
     }
 
@@ -50,6 +55,8 @@ export const Shape = <const D extends DictShorthand | DictDefinition<any>, B ext
   }
 
   return Intermediate as any as NonConstructor<typeof Intermediate> & {
-    new(data: DefinitionParameter<ShorthandToLonghand<D>>): InstanceType<B> & Intermediate & DefinitionRuntime<ShorthandToLonghand<D>>;
-  }
+    new (data: DefinitionParameter<ShorthandToLonghand<D>>): InstanceType<B> &
+      Intermediate &
+      DefinitionRuntime<ShorthandToLonghand<D>>;
+  };
 };
