@@ -76,9 +76,7 @@ describe("Shape", () => {
       isChild = true;
 
       dothing() {
-        this.base
         this.isParent;
-        this.base.isParent;
         // @ts-expect-error
         this.notExisting;
 
