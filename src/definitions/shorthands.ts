@@ -13,6 +13,11 @@ import { StringEnumDefinition, StringEnumShorthand } from "./stringEnum";
 import { EitherDefinition } from "./either";
 import { OptionalDefinition } from "./optional";
 import { TupleDefinition } from "./tuple";
+import {
+	NothingConfiguration,
+	NothingDefinition,
+	NothingShorthand,
+} from "./nothing";
 
 export type AnyShorthand =
 	| LiteralShorthand
@@ -20,7 +25,8 @@ export type AnyShorthand =
 	| MultipleShorthand
 	| ChildShorthand
 	| SerializableClassShorthand
-	| StringEnumShorthand;
+	| StringEnumShorthand
+	| NothingShorthand;
 
 export type AnyDefinition =
 	| ChildDefinition
@@ -31,28 +37,31 @@ export type AnyDefinition =
 	| MultipleDefinition
 	| OptionalDefinition
 	| StringEnumDefinition
-	| TupleDefinition;
+	| TupleDefinition
+	| NothingDefinition;
 
-export type ShorthandToLonghand<T> = T extends IsShapeConstructor<Definition>
-	? ChildDefinition<T>
-	: T extends SerializableClassConfiguration
-	  ? SerializableClassDefinition<T>
-	  : T extends Definition
-		  ? T
-		  : T extends typeof String
-			  ? LiteralDefinition<T>
-			  : T extends typeof Number
+export type ShorthandToLonghand<T> = T extends undefined
+	? NothingDefinition
+	: T extends IsShapeConstructor<Definition>
+	  ? ChildDefinition<T>
+	  : T extends SerializableClassConfiguration
+		  ? SerializableClassDefinition<T>
+		  : T extends Definition
+			  ? T
+			  : T extends typeof String
 				  ? LiteralDefinition<T>
-				  : T extends typeof Boolean
+				  : T extends typeof Number
 					  ? LiteralDefinition<T>
-					  : T extends typeof Date
+					  : T extends typeof Boolean
 						  ? LiteralDefinition<T>
-						  : T extends [...infer C extends string[]]
-							  ? StringEnumDefinition<C>
-							  : T extends [infer C]
-								  ? MultipleDefinition<ShorthandToLonghand<C>>
-								  : T extends Record<string, any>
-									  ? DictDefinition<{
-												[k in keyof T]: ShorthandToLonghand<T[k]>;
-										  }>
-									  : never;
+						  : T extends typeof Date
+							  ? LiteralDefinition<T>
+							  : T extends [...infer C extends string[]]
+								  ? StringEnumDefinition<C>
+								  : T extends [infer C]
+									  ? MultipleDefinition<ShorthandToLonghand<C>>
+									  : T extends Record<string, any>
+										  ? DictDefinition<{
+													[k in keyof T]: ShorthandToLonghand<T[k]>;
+											  }>
+										  : never;

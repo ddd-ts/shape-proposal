@@ -4,6 +4,7 @@ import {
 	DefinitionRuntime,
 	DefinitionSerialized,
 } from "../definitions/definition";
+import { NothingDefinition } from "../definitions/nothing";
 import {
 	ShorthandToLonghand,
 	AnyShorthand,
@@ -53,9 +54,13 @@ export const Primitive = <
 		}
 	}
 
+	type Params = ShorthandToLonghand<D> extends NothingDefinition
+		? []
+		: [data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>];
+
 	return Intermediate as unknown as {
 		isPrimitive: true;
-		new (data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>): {
+		new (...args: Params): {
 			serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;
 		} & Intermediate &
 			InstanceType<B>;
