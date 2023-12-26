@@ -1,51 +1,47 @@
 import {
-	Definition,
 	DefinitionParameter,
 	DefinitionRuntime,
 	DefinitionSerialized,
 } from "../definitions/definition";
-import {
-	ShorthandToLonghand,
-	AnyShorthand,
-	AnyDefinition,
-} from "../definitions/shorthands";
+import { DictDefinition, DictShorthand } from "../definitions/dict";
+import { ShorthandToLonghand } from "../definitions/shorthands";
 import { shorthandToLonghand } from "../shorthandToLonghand";
 import { Class, Constructor, Expand } from "../types";
 
-export type IsPrimitiveConstructor<D extends AnyShorthand | AnyDefinition> =
+export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
 	Constructor<{
 		serialize: () => Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;
 	}> & {
 		deserialize: ShorthandToLonghand<D>["deserialize"];
-		isPrimitive: true;
+		isShape: true;
 	};
 
-class DefaultPrimitiveBaseClass {}
+class DefaultShapeBaseClass {}
 
-export const Primitive = <
-	const D extends AnyShorthand | Definition,
-	B extends Class<{}>,
+export const ObjectShape = <
+	const D extends DictShorthand | DictDefinition<any>,
+	const B extends Class<{}>,
 >(
 	definition: D,
-	base: B = DefaultPrimitiveBaseClass as B,
+	base: B = DefaultShapeBaseClass as B,
 ) => {
 	const longhand = shorthandToLonghand(definition);
 
 	class Intermediate extends base {
-		static isPrimitive = true as const;
-		public value: DefinitionRuntime<ShorthandToLonghand<D>>;
+		base = base;
+		static isShape = true as const;
 
-		constructor(...args: any[]) {
-			const converted = longhand.paramToRuntime(args[0]);
-			super();
-			this.value = converted;
+		constructor(data: DefinitionParameter<ShorthandToLonghand<D>>) {
+			const converted = longhand.paramToRuntime(data);
+			super(converted);
+			Object.assign(this, converted);
 		}
 
-		static deserialize<T extends IsPrimitiveConstructor<D>>(
+		static deserialize<T extends IsShapeConstructor<D>>(
 			this: T,
 			serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>,
 		) {
-			return new this(longhand.deserialize(serialized as any)) as any;
+			return new this(longhand.deserialize(serialized as any));
 		}
 
 		serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>> {
@@ -54,13 +50,13 @@ export const Primitive = <
 	}
 
 	return Intermediate as unknown as {
-		isPrimitive: true;
-		new (data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>): {
-			value: DefinitionRuntime<ShorthandToLonghand<D>>;
-		} & {
+		isShape: true;
+		new (
+			data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>,
+		): DefinitionRuntime<ShorthandToLonghand<D>> & {
 			serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;
 		} & InstanceType<B>;
-		deserialize<T extends IsPrimitiveConstructor<D>>(
+		deserialize<T extends IsShapeConstructor<D>>(
 			this: T,
 			serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>,
 		): InstanceType<T>;

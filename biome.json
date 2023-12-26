@@ -8,7 +8,12 @@
 				"noShadowRestrictedNames": "off"
 			},
 			"complexity": {
-				"noThisInStatic": "off"
+				"noThisInStatic": "off",
+				"noBannedTypes": "off",
+				"noStaticOnlyClass": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
 			}
 		}
 	}

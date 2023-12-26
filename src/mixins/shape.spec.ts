@@ -1,117 +1,81 @@
-import { Shape } from "./shape";
 import { Optional } from "../definitions/optional";
-import { check } from "../testUtils";
-import { DictDefinition, DictShorthand } from "../definitions/dict";
-import { DefinitionParameter } from "../definitions/definition";
-import { Constructor } from "../types";
-import { ShorthandToLonghand } from "../definitions/shorthands";
+import { check, checkPrimitive } from "../testUtils";
+import { ObjectShape } from "./objectShape";
+import { Primitive } from "./primitive";
+import { Shape } from "./shape";
 
 describe("Shape", () => {
-  it("uses keyword-less notation", () => {
-    class ShapeChild extends Shape({
-      value: Number,
-    }) { }
+	it("uses primitive", () => {
+		class Id extends Primitive(String) {}
 
-    class SerializableChild {
-      constructor(public readonly value: number) { }
+		const a = new Id("my id");
+		expect(a.value).toEqual("my id");
 
-      serialize() {
-        return { value: this.value };
-      }
+		a.serialize();
 
-      static deserialize(serialized: { value: number }) {
-        return new SerializableChild(serialized.value);
-      }
-    }
+		checkPrimitive(Id, a);
+	});
 
-    class Test extends Shape({
-      string: String,
-      number: Number,
-      boolean: Boolean,
-      date: Date,
-      optional: Optional(Number),
-      multiple: [Number],
-      stringEnum: ["a", "b", "c"],
-      child: ShapeChild,
-      serializableClass: SerializableChild,
-    }) { }
+	it("uses complex primitive", () => {
+		class Test extends Shape([String]) {}
 
-    const a = new Test({
-      string: "my string",
-      number: 2,
-      boolean: true,
-      date: new Date("1998-10-28T00:00:00.000Z"),
-      optional: undefined,
-      multiple: [1, 2, 3, 4, 5],
-      stringEnum: "b",
-      child: new ShapeChild({ value: 4 }),
-      serializableClass: new SerializableChild(5),
-    });
+		const a = new Test(["a", "b", "c"]);
+		expect(a.value).toEqual(["a", "b", "c"]);
 
-    expect(a.string).toEqual("my string");
-    expect(a.number).toEqual(2);
-    expect(a.boolean).toEqual(true);
-    expect(a.date).toEqual(new Date("1998-10-28T00:00:00.000Z"));
-    expect(a.optional).toEqual(undefined);
-    expect(a.multiple).toEqual([1, 2, 3, 4, 5]);
-    expect(a.stringEnum.value).toEqual("b");
-    expect(a.child).toEqual(new ShapeChild({ value: 4 }));
-    expect(a.serializableClass).toEqual(new SerializableChild(5));
+		checkPrimitive(Test, a);
+	});
 
-    check(Test, a);
-  });
+	it("uses dict", () => {
+		class ShapeChild extends Shape({
+			value: Number,
+		}) {}
 
-  it('allows base class extension', () => {
-    class Parent {
-      count = 0;
-      increment() {
-        this.count++;
-      }
+		class SerializableChild {
+			constructor(public readonly value: number) {}
 
-      isParent = true;
-      static isParent = true;
-    }
+			serialize() {
+				return { value: this.value };
+			}
 
-    class Child extends Shape({ value: Number, count: Number }, Parent) {
-      isChild = true;
+			static deserialize(serialized: { value: number }) {
+				return new SerializableChild(serialized.value);
+			}
+		}
 
-      dothing() {
-        this.isParent;
-        // @ts-expect-error
-        this.notExisting;
+		class Test extends Shape({
+			string: String,
+			number: Number,
+			boolean: Boolean,
+			date: Date,
+			optional: Optional(Number),
+			multiple: [Number],
+			stringEnum: ["a", "b", "c"],
+			child: ShapeChild,
+			serializableClass: SerializableChild,
+		}) {}
 
-        this.increment()
-        return this.count;
-      }
-    }
+		const a = new Test({
+			string: "my string",
+			number: 2,
+			boolean: true,
+			date: new Date("1998-10-28T00:00:00.000Z"),
+			optional: undefined,
+			multiple: [1, 2, 3, 4, 5],
+			stringEnum: "b",
+			child: new ShapeChild({ value: 4 }),
+			serializableClass: new SerializableChild(5),
+		});
 
-    const child = new Child({ value: 5, count: 0 });
-    expect(child.value).toBe(5);
-    expect(child.isChild).toBe(true);
-    expect(child.isParent).toBe(true);
-    expect(child.count).toBe(0);
-    child.increment();
-    expect(child.count).toBe(1);
-    check(Child, child)
-  })
+		expect(a.string).toEqual("my string");
+		expect(a.number).toEqual(2);
+		expect(a.boolean).toEqual(true);
+		expect(a.date).toEqual(new Date("1998-10-28T00:00:00.000Z"));
+		expect(a.optional).toEqual(undefined);
+		expect(a.multiple).toEqual([1, 2, 3, 4, 5]);
+		expect(a.stringEnum.value).toEqual("b");
+		expect(a.child).toEqual(new ShapeChild({ value: 4 }));
+		expect(a.serializableClass).toEqual(new SerializableChild(5));
 
-
-  it('allow custom base class', () => {
-
-
-    const Event = <const D extends DictShorthand | DictDefinition<any>>(payloadDefinition: D) => {
-      // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
-      return Shape({ id: String, payload: payloadDefinition }, class I {
-        static new<T extends Constructor<any>>(this: T, payload: DefinitionParameter<ShorthandToLonghand<D>>) {
-          return new this({ id: "123", payload }) as InstanceType<T>
-        }
-
-      })
-    }
-
-    class Deposited extends Event({ accountId: String, amount: Number }) { }
-
-    Deposited.new({ accountId: '', amount: 4 }).serialize()
-
-  })
+		check(Test, a);
+	});
 });

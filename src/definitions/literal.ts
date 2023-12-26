@@ -16,7 +16,7 @@ export type LiteralRuntime<L extends LiteralInput> = Extract<
 
 export type LiteralShorthand = LiteralInput;
 export type LiteralConfiguration = LiteralInput | LiteralShorthand;
-export type LiteralDefinition<C extends LiteralConfiguration> = Definition<
+export type LiteralDefinition<C extends LiteralConfiguration = LiteralConfiguration> = Definition<
   LiteralRuntime<C>,
   LiteralRuntime<C>
 >;
@@ -26,6 +26,6 @@ export function Literal<C extends LiteralConfiguration>(
   return {
     paramToRuntime: (param) => param,
     serialize: (runtime) => runtime,
-    deserialize: (serialized) => serialized,
+    deserialize: (serialized) => serialized
   };
 }

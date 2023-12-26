@@ -1,8 +1,9 @@
+import { shorthandToLonghand } from "../shorthandToLonghand";
 import { Definition } from "./definition";
 import { SerializableClassConfiguration } from "./serializableClass";
 
 export type EitherConfiguration = SerializableClassConfiguration[];
-export type EitherDefinition<C extends EitherConfiguration> = Definition<
+export type EitherDefinition<C extends EitherConfiguration = EitherConfiguration> = Definition<
   InstanceType<C[number]>,
   [number, ReturnType<InstanceType<C[number]>["serialize"]>]
 >;
@@ -27,6 +28,6 @@ export function Either<C extends EitherConfiguration>(
         throw new Error(`Cannot deserialize either at index ${index}`);
       }
       return ctor.deserialize(serialized);
-    },
+    }
   };
 }

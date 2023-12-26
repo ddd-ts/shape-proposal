@@ -17,7 +17,7 @@ export type SerializableClassConfiguration = Constructor<{
 };
 export type SerializableClassShorthand = SerializableClassConfiguration;
 export type SerializableClassDefinition<
-  C extends SerializableClassConfiguration
+  C extends SerializableClassConfiguration = SerializableClassConfiguration
 > = Definition<InstanceType<C>, ReturnType<InstanceType<C>["serialize"]>>;
 export function SerializableClass<C extends SerializableClassConfiguration>(
   configuration: C
@@ -29,6 +29,6 @@ export function SerializableClass<C extends SerializableClassConfiguration>(
     },
     deserialize: (serialized) => {
       return configuration.deserialize(serialized) as any;
-    },
+    }
   };
 }
