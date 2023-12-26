@@ -1,4 +1,4 @@
-import { Shape } from "../shape";
+import { Shape } from "../mixins/shape";
 import { check } from "../testUtils";
 import { Either } from "./either";
 
@@ -6,15 +6,15 @@ describe("Definition: Either", () => {
   it("uses keyword notation", () => {
     class A extends Shape({
       value: String,
-    }) {}
+    }) { }
 
     class B extends Shape({
       value: Number,
-    }) {}
+    }) { }
 
     class Test extends Shape({
       value: Either(A, B),
-    }) {}
+    }) { }
 
     const a = new Test({ value: new A({ value: "a" }) });
     expect(a.value.value).toEqual("a");

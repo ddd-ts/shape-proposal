@@ -1,6 +1,6 @@
-import { IsShapeConstructor, Shape } from "./shape";
+import { IsShapeConstructor, Shape } from "./mixins/shape";
 import { Definition } from "./definitions/definition";
-import { IsPrimitiveConstructor } from "./primitive";
+import { IsPrimitiveConstructor } from "./mixins/primitive";
 
 export function check<D extends Definition>(
   constructor: IsShapeConstructor<D>,

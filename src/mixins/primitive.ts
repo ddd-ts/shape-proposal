@@ -3,10 +3,10 @@ import {
   DefinitionParameter,
   DefinitionRuntime,
   DefinitionSerialized,
-} from "./definitions/definition";
-import { ShorthandToLonghand, Shorthands } from "./definitions/shorthands";
-import { shorthandToLonghand } from "./shorthandToLonghand";
-import { AbstractConstructor, Constructor, Expand } from "./types";
+} from "../definitions/definition";
+import { ShorthandToLonghand, Shorthands } from "../definitions/shorthands";
+import { shorthandToLonghand } from "../shorthandToLonghand";
+import { AbstractConstructor, Constructor, Expand } from "../types";
 
 export type IsPrimitiveConstructor<D extends Shorthands | Definition> =
   Constructor<{
@@ -21,7 +21,7 @@ type NonConstructorKeys<T> = {
 }[keyof T];
 type NonConstructor<T> = Pick<T, NonConstructorKeys<T>>;
 
-class DefaultPrimitiveBaseClass {}
+class DefaultPrimitiveBaseClass { }
 
 export const Primitive = <
   const D extends Shorthands | Definition,
@@ -57,7 +57,7 @@ export const Primitive = <
 
   return Intermediate as unknown as {
     isPrimitive: true;
-    new (data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>): {
+    new(data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>): {
       value: DefinitionRuntime<ShorthandToLonghand<D>>;
     } & {
       serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;

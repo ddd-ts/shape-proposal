@@ -7,6 +7,6 @@ export * from './definitions/serializableClass';
 export * from './definitions/shorthands';
 export * from './definitions/stringEnum';
 export * from './definitions/tuple';
-export * from './shape';
+export * from './mixins/shape';
 export * from './shorthandToLonghand';
 export * from './types';

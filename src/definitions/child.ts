@@ -1,4 +1,4 @@
-import { IsShapeConstructor } from "../shape";
+import { IsShapeConstructor } from "../mixins/shape";
 import { Definition } from "./definition";
 
 export type ChildConfiguration = IsShapeConstructor<Definition>;

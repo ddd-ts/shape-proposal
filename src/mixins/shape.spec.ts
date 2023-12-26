@@ -1,10 +1,10 @@
 import { Shape } from "./shape";
-import { Optional } from "./definitions/optional";
-import { check } from "./testUtils";
-import { DictDefinition, DictShorthand } from "./definitions/dict";
-import { DefinitionParameter } from "./definitions/definition";
-import { Constructor } from "./types";
-import { ShorthandToLonghand } from "./definitions/shorthands";
+import { Optional } from "../definitions/optional";
+import { check } from "../testUtils";
+import { DictDefinition, DictShorthand } from "../definitions/dict";
+import { DefinitionParameter } from "../definitions/definition";
+import { Constructor } from "../types";
+import { ShorthandToLonghand } from "../definitions/shorthands";
 
 describe("Shape", () => {
   it("uses keyword-less notation", () => {

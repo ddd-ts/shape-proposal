@@ -2,11 +2,11 @@ import {
   DefinitionParameter,
   DefinitionRuntime,
   DefinitionSerialized,
-} from "./definitions/definition";
-import { DictDefinition, DictShorthand } from "./definitions/dict";
-import { ShorthandToLonghand } from "./definitions/shorthands";
-import { shorthandToLonghand } from "./shorthandToLonghand";
-import { AbstractConstructor, Constructor, Expand } from "./types";
+} from "../definitions/definition";
+import { DictDefinition, DictShorthand } from "../definitions/dict";
+import { ShorthandToLonghand } from "../definitions/shorthands";
+import { shorthandToLonghand } from "../shorthandToLonghand";
+import { AbstractConstructor, Constructor, Expand } from "../types";
 
 export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
   Constructor<{
@@ -16,7 +16,7 @@ export type IsShapeConstructor<D extends DictShorthand | DictDefinition<any>> =
     isShape: true;
   };
 
-class DefaultShapeBaseClass {}
+class DefaultShapeBaseClass { }
 
 export const Shape = <
   const D extends DictShorthand | DictDefinition<any>,
@@ -52,7 +52,7 @@ export const Shape = <
 
   return Intermediate as unknown as {
     isShape: true;
-    new (
+    new(
       data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>
     ): DefinitionRuntime<ShorthandToLonghand<D>> & {
       serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;

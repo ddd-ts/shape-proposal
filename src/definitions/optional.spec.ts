@@ -1,4 +1,4 @@
-import { Shape } from "../shape";
+import { Shape } from "../mixins/shape";
 import { check } from "../testUtils";
 import { Optional } from "./optional";
 

@@ -1,4 +1,4 @@
-import { IsShapeConstructor } from "../shape";
+import { IsShapeConstructor } from "../mixins/shape";
 import { ChildDefinition, ChildShorthand } from "./child";
 import { Definition } from "./definition";
 import { DictShorthand, DictDefinition } from "./dict";

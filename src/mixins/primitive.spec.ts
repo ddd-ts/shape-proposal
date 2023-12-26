@@ -1,9 +1,9 @@
 import { Primitive } from "./primitive";
-import { checkPrimitive } from "./testUtils";
+import { checkPrimitive } from "../testUtils";
 
 describe("Primitive", () => {
   it("uses primitive", () => {
-    class Id extends Primitive(String) {}
+    class Id extends Primitive(String) { }
 
     const a = new Id("my id");
     expect(a.value).toEqual(a);
@@ -12,7 +12,7 @@ describe("Primitive", () => {
   });
 
   it("uses complex primitive", () => {
-    class Test extends Primitive([String]) {}
+    class Test extends Primitive([String]) { }
 
     const a = new Test(["a", "b", "c"]);
     expect(a.value).toEqual(["a", "b", "c"]);
