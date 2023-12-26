@@ -49,18 +49,17 @@ export const Primitive = <
 		}
 
 		serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>> {
-			return longhand.serialize(this) as any;
+			return longhand.serialize(this.value) as any;
 		}
 	}
 
 	return Intermediate as unknown as {
 		isPrimitive: true;
 		new (data: Expand<DefinitionParameter<ShorthandToLonghand<D>>>): {
-			value: DefinitionRuntime<ShorthandToLonghand<D>>;
-		} & {
 			serialize(): Expand<DefinitionSerialized<ShorthandToLonghand<D>>>;
-		} & InstanceType<B>;
-		deserialize<T extends IsPrimitiveConstructor<D>>(
+		} & Intermediate &
+			InstanceType<B>;
+		deserialize<T extends Class<{}>>(
 			this: T,
 			serialized: Expand<DefinitionSerialized<ShorthandToLonghand<D>>>,
 		): InstanceType<T>;

@@ -8,6 +8,7 @@ describe("Primitive", () => {
 		const a = new Id("my id");
 		expect(a.value).toEqual("my id");
 
+		console.log(a.serialize());
 		checkPrimitive(Id, a);
 	});
 

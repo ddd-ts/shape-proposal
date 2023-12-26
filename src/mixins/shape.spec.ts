@@ -1,17 +1,19 @@
 import { Optional } from "../definitions/optional";
 import { check, checkPrimitive } from "../testUtils";
-import { ObjectShape } from "./objectShape";
-import { Primitive } from "./primitive";
 import { Shape } from "./shape";
 
 describe("Shape", () => {
 	it("uses primitive", () => {
-		class Id extends Primitive(String) {}
+		class Id extends Shape(String) {
+			test() {
+				return "2" as const;
+			}
+		}
 
 		const a = new Id("my id");
 		expect(a.value).toEqual("my id");
 
-		a.serialize();
+		expect(a.test()).toEqual("2");
 
 		checkPrimitive(Id, a);
 	});
@@ -26,6 +28,8 @@ describe("Shape", () => {
 	});
 
 	it("uses dict", () => {
+		class PrimitiveChild extends Shape(String) {}
+
 		class ShapeChild extends Shape({
 			value: Number,
 		}) {}
@@ -52,6 +56,7 @@ describe("Shape", () => {
 			stringEnum: ["a", "b", "c"],
 			child: ShapeChild,
 			serializableClass: SerializableChild,
+			primitiveChild: PrimitiveChild,
 		}) {}
 
 		const a = new Test({
@@ -64,6 +69,7 @@ describe("Shape", () => {
 			stringEnum: "b",
 			child: new ShapeChild({ value: 4 }),
 			serializableClass: new SerializableChild(5),
+			primitiveChild: new PrimitiveChild("primitive"),
 		});
 
 		expect(a.string).toEqual("my string");
@@ -75,6 +81,7 @@ describe("Shape", () => {
 		expect(a.stringEnum.value).toEqual("b");
 		expect(a.child).toEqual(new ShapeChild({ value: 4 }));
 		expect(a.serializableClass).toEqual(new SerializableChild(5));
+		expect(a.primitiveChild.value).toEqual("primitive");
 
 		check(Test, a);
 	});
