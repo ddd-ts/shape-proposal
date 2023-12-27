@@ -13,11 +13,7 @@ import { StringEnumDefinition, StringEnumShorthand } from "./stringEnum";
 import { EitherDefinition } from "./either";
 import { OptionalDefinition } from "./optional";
 import { TupleDefinition } from "./tuple";
-import {
-  NothingConfiguration,
-  NothingDefinition,
-  NothingShorthand,
-} from "./nothing";
+import { NothingDefinition, NothingShorthand } from "./nothing";
 
 export type AnyShorthand =
   | LiteralShorthand
